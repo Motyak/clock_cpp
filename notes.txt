@@ -1,0 +1,11 @@
+Il faudrait que l'objet clock s'update périodiquement chaque seconde, 
+mais sans freeze le programme (donc dans un thread dédié).
+
+On pourrait implémenter un pattern observer pour prévenir les objets
+registered lorsque la clock s'update.
+
+On ferait une classe wrapper de std::time_t qui va récupérer la valeur
+time_t actuelle.
+
+Avoir un attribut publique <=> std::tm pour récupérer chaque
+valeur entière indépendamment
