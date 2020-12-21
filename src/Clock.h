@@ -2,7 +2,6 @@
 #define CLOCK_H
 
 #include <ctime>
-#include <memory>
 #include <iostream>
 #include <cstring>
 #include <chrono>
@@ -10,7 +9,7 @@
 
 class Clock
 {
-    std::unique_ptr<std::time_t> now;
+    std::time_t now;
     std::thread th;
 
     void update();

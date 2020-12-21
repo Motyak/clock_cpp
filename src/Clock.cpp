@@ -2,8 +2,6 @@
 
 Clock::Clock()
 {
-    this->now = std::make_unique<std::time_t>();
-
     this->update();
     
     this->th = std::thread(&Clock::updatePeriodically, this);
@@ -12,7 +10,7 @@ Clock::Clock()
 
 void Clock::update()
 {
-    std::time(this->now.get());
+    std::time(&this->now);
 }
 
 void Clock::updatePeriodically()
@@ -26,7 +24,7 @@ void Clock::updatePeriodically()
 
 std::ostream& operator<<(std::ostream& os, const Clock& clock)
 {
-    char* time = std::ctime(clock.now.get());
+    char* time = std::ctime(&clock.now);
     time[strlen(time) - 1] = '\0';
     return os << time;
 }
