@@ -21,7 +21,6 @@ void Clock::updatePeriodically()
     {
         std::this_thread::sleep_for(std::chrono::seconds(1));
         this->update();
-        std::cout<<*this<<std::endl;
     }
 }
 
