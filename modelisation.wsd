@@ -1,0 +1,48 @@
+@startuml modelisation
+
+class TimeState
+{
+    +h : unsigned
+    +min : unsigned
+    +sec : unsigned
+}
+
+Time "state" *-- TimeState
+class Time
+{
+    ' incrémenter le state
+    -tick() : void
+    ' incrémenter le state à une certaine fréquence
+    -tickPeriodically() : void
+    ' mettre à l'heure selon une source extérieure
+    +setToCurrentTime() : void
+    ' faire avancer le temps d'un certain cran
+    +forward(strength : float) : void
+    ' faire reculer le temps d'un certain cran
+    +backward(strength : float) : void
+    +set(state : TimeState) : void
+    +get() : TimeState
+}
+
+class Clock
+{
+    +run() : void
+    +display() : void
+    +setTime(state : TimeState) : void
+}
+
+ClockHandler "time" *-- Time
+ClockHandler "clock" *--> "clockHandler" Clock
+class ClockHandler
+{
+    -updateClock() : void
+    +setToCurrentTime() : void
+    +forwardTime(strength : float) : void
+    +backwardTime(strength : float) : void
+    ' Proposes de load un fichier .clock (sérialisé)
+    ' Vérifie que la clock soit compatible avec le format de temps
+    ' Sinon avertir que le format de temps va changer (donc reset)
+    +loadClock() : void
+}
+
+@enduml

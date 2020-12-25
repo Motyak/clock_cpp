@@ -1,11 +1,109 @@
-Il faudrait que l'objet clock s'update périodiquement chaque seconde, 
-mais sans freeze le programme (donc dans un thread dédié).
-
 On pourrait implémenter un pattern observer pour prévenir les objets
 registered lorsque la clock s'update.
 
-On ferait une classe wrapper de std::time_t qui va récupérer la valeur
-time_t actuelle.
+A la fin on fera tout dans un seul fichier cpp.
 
-Avoir un attribut publique <=> std::tm pour récupérer chaque
-valeur entière indépendamment
+
+
+
+
+Qu'est-ce qu'une horloge ?
+Instrument "mesurant le temps" à sa manière.
+Elle est périodique, elle a par conséquent un nombre fini
+d'état (outre valeurs interpolées).
+
+Que serait une horloge idéal ?
+Pas de panne électronique, pas de pile/batterie,
+rafraichissement haute fréquence (Pouvoir interpoler 
+dans l'affichage graphique),
+pouvant avoir plusieurs affichages possibles pour
+correspondre au mieux au besoin ou à la personne
+l'utilisant.
+Peut changer de système de mesure en cours de route.
+Skinnable (image de fond fixe ou animée, ..)
+On pourrait avoir des horloges dans l'horloge (par exemple 
+horloge analogique avec en fond la phase lunaire).
+
+Exemples d'horloge :
+Horloge numérique, horloge analogique, 
+Courbe sinusoïdale, couleur RGB,
+mouvement des astres, barre de progression,
+métronome, horloge binaire, ...
+
+
+
+
+
+
+
+
+Tout peut être une horloge, si on fait une interface horloge avec
+une méthode tick(), on peut faire une classe adapter de n'importe
+quelle classe à la base non prévue à cet effet.
+
+Il faudrait être capable d'avoir le moins d'états possibles et
+tout de même être capable d'interpoler donc de déduire les 
+états intermédiaires.
+
+
+Horloge numérique/analogique :
+Y'a 24 heures donc 24*60*60 = 86 400 secondes.
+Donc on a 86400 ticks, et un tick par seconde.
+
+
+Horloge RGB :
+Y'a 256^3 couleurs donc 16 777 216 couleurs.
+Si on veut faire en sorte de faire un cycle complet en 24h, 
+alors il y aura 194 ou 195 couleurs par secondes.
+
+
+
+
+
+
+Pour que l'horloge fasse du sens, il faut savoir :
+-Pouvoir traduire un état basé sur le système de temps communément 
+    utilisé vers le nouveau système.
+-Combien d'états différents dans une période / un cycle complet
+-Fréquence de rafraîchissement de l'état (système interne),
+    par ex. un tick/incrément par seconde.
+-Fréquence de rafraîchissement de l'affichage (interface graphique),
+    faire en sorte que ça s'adapte au nombre d'itération par seconde
+    dans la boucle de rendu ou à la fréquence de l'écran ou 
+    à une fréquence préféfinie (interpoler ou cut des états)
+
+
+On a d'un côté le Time qui représente la valeur interne du temps mesuré.
+Et de l'autre la Clock qui affiche le Time d'une certaine manière.
+Puis évidemment un gestionnaire d'horloge qui permet de charger
+un Time, une Clock, de switch de l'un à l'autre, d'intéragir avec
+le Time au travers d'evènements (pouvoir faire passer les jours ou
+mois avec les flèches directionnelles du clavier par exemple, ..)
+
+
+
+En réalité un update c'est un incrément de l'état. Donc on pourrait, 
+en c++, surcharger l'opérateur '++' (même si c'est une structure)
+
+-Quoiqu'il arrive ça se base sur le système de temps communément
+    utilisé. 
+-La durée d'un cycle complet s'exprime dans le pas minimal
+    d'incrément (par exemple seconde ou minute ou heure, ...).
+-Chaque Time a sa propre manière de stocker l'information de temps,
+    le but étant de faciliter son affichage par la suite.
+-Chaque Time possède sa méthode update() qui permet de mettre à jour
+    son état interne.
+-Chaque time possède setState(..) qui permet de régler le Time à
+    un état précis.
+
+A clock tells current time.
+A Time updates its state periodically.
+A TimeState represents a specific state its time cycle.
+
+Horloges à implémenter :
+-Une horloge classique
+-Une horloge binaire
+-Une barre de progression (pourcentage de 0 à 100)
+-Couleurs RGB
+-Phases de la Lune
+-Position Soleil, Lune, Vénus, Saturn, Jupiter
